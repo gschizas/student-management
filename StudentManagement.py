@@ -52,9 +52,9 @@ class Payment(db.Model):
 # Flask and Flask-SQLAlchemy initialization here
 
 admin = Admin(app, url='', name='studentmanagement', template_mode='bootstrap3')
-admin.add_view(ModelView(Student, db.session))
-admin.add_view(ModelView(Lesson, db.session))
-admin.add_view(ModelView(Payment, db.session))
+admin.add_view(ModelView(Student, db.session, name="Μαθητές"))
+admin.add_view(ModelView(Lesson, db.session, name="Μαθήματα"))
+admin.add_view(ModelView(Payment, db.session, name="Πληρωμές"))
 
 if __name__ == '__main__':
 
