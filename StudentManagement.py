@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask
-from flask_admin import Admin
+from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
@@ -61,6 +61,20 @@ class Payment(db.Model):
     amount = db.Column(db.DECIMAL)
 
 
+class ReportsView(BaseView):
+    @expose('/')
+    def index(self):
+        lines = []
+        all_lessons = list(db.session.query(Lesson))
+        all_payments = list(db.session.query(Payment))
+        all_students = list(db.session.query(Student))
+        for s in all_students:
+            student_paid = sum([p.amount for p in all_payments if p.student_id == s.id])
+            student_bought = sum([l.fee * l.hours for l in all_lessons if l.student_id == s.id])
+            lines.append({'Student': str(s), 'Balance': round(student_bought - student_paid, 2)})
+        return self.render('reports_index.html', lines=lines)
+
+
 # Flask and Flask-SQLAlchemy initialization here
 
 admin = Admin(app, url='', name='studentmanagement', template_mode='bootstrap3')
@@ -68,6 +82,8 @@ admin.add_view(ModelView(Student, db.session, name="Μαθητές"))
 admin.add_view(ModelView(Lesson, db.session, name="Μαθήματα"))
 admin.add_view(ModelView(Payment, db.session, name="Πληρωμές"))
 admin.add_view(ModelView(Year, db.session, name="Έτη"))
+admin.add_view(ReportsView(name="Αναφορά Πληρωμών", endpoint='reports'))
+# menu_icon_type='glyph', menu_icon_value='glyphicon-home',
 
 if __name__ == '__main__':
 

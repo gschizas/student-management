@@ -1,0 +1,9 @@
+{% extends 'admin/master.html' %}
+{% block body %}
+    <table class="table table-striped table-bordered table-hover">
+    <tr><th>Μαθητής</th><th>Υπόλοιπο</th></tr>
+    {% for line in lines %}
+        <tr><td>{{ line.Student }}</td><td>{{ line.Balance }}</td></tr>
+    {% endfor %}
+    </table>
+{% endblock %}
