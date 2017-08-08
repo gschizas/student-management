@@ -16,12 +16,24 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
+class Year(db.Model):
+    __tablename__ = 'years'
+    id = db.Column(db.Integer, primary_key=True)
+    year_start = db.Column(db.Integer)
+    year_end = db.Column(db.Integer)
+
+    def __str__(self):
+        return f"{self.year_start}-{self.year_end}"
+
+
 class Student(db.Model):
     __tablename__ = 'students'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(50))
     current_fee = db.Column(db.DECIMAL)
+    year_id = db.Column(db.Integer, ForeignKey('years.id'))
+    year = relationship('Year')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -55,6 +67,7 @@ admin = Admin(app, url='', name='studentmanagement', template_mode='bootstrap3')
 admin.add_view(ModelView(Student, db.session, name="Μαθητές"))
 admin.add_view(ModelView(Lesson, db.session, name="Μαθήματα"))
 admin.add_view(ModelView(Payment, db.session, name="Πληρωμές"))
+admin.add_view(ModelView(Year, db.session, name="Έτη"))
 
 if __name__ == '__main__':
 
