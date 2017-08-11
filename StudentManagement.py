@@ -74,10 +74,8 @@ class ReportsView(BaseView):
         return self.render('reports_index.html', lines=lines)
 
 
-# Flask and Flask-SQLAlchemy initialization here
-
-admin = Admin(app, url='', name='studentmanagement', template_mode='bootstrap3')
 admin.add_view(ModelView(Student, db.session, name="Μαθητές", menu_icon_type='glyph', menu_icon_value='glyphicon-user'))
+admin = Admin(app, url='', name='Διαχείριση Μαθητών', template_mode='bootstrap3')
 admin.add_view(
     ModelView(Lesson, db.session, name="Μαθήματα", menu_icon_type='glyph', menu_icon_value='glyphicon-education'))
 admin.add_view(ModelView(Payment, db.session, name="Πληρωμές", menu_icon_type='glyph', menu_icon_value='glyphicon-eur'))
