@@ -76,7 +76,6 @@ class ReportsView(BaseView):
         return self.render('reports_index.html', lines=lines)
 
 
-admin.add_view(ModelView(Student, db.session, name="Μαθητές", menu_icon_type='glyph', menu_icon_value='glyphicon-user'))
 class CustomDecimalField(DecimalField):
     pass
 
@@ -97,7 +96,7 @@ class LessonView(ModelView):
 
 admin = Admin(app, url='', name='Διαχείριση Μαθητών', template_mode='bootstrap3')
 admin.add_view(
-    ModelView(Lesson, db.session, name="Μαθήματα", menu_icon_type='glyph', menu_icon_value='glyphicon-education'))
+    StudentView(Student, db.session, name="Μαθητές", menu_icon_type='glyph', menu_icon_value='glyphicon-user'))
 admin.add_view(ModelView(Payment, db.session, name="Πληρωμές", menu_icon_type='glyph', menu_icon_value='glyphicon-eur'))
 admin.add_view(ModelView(Year, db.session, name="Έτη", menu_icon_type='glyph', menu_icon_value='glyphicon-calendar'))
 admin.add_view(
