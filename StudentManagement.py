@@ -86,6 +86,9 @@ class StudentView(ModelView):
     form_choices = {
         'year_start': [(i, f"{i}-{i%100+1}") for i in range(_current_year - 2, _current_year + 3)]
     }
+    column_formatters = {
+        'year_start': lambda v, c, m, p: f"{m.year_start}-{m.year_start%100+1}"
+    }
 
 
 class LessonView(ModelView):
