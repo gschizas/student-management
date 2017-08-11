@@ -16,14 +16,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-class Year(db.Model):
-    __tablename__ = 'years'
-    id = db.Column(db.Integer, primary_key=True)
-    year_start = db.Column(db.Integer)
-    year_end = db.Column(db.Integer)
-
-    def __str__(self):
-        return f"{self.year_start}-{self.year_end}"
 
 
 class Student(db.Model):
@@ -32,11 +24,10 @@ class Student(db.Model):
     first_name = db.Column(db.String(30))
     last_name = db.Column(db.String(50))
     current_fee = db.Column(db.DECIMAL)
-    year_id = db.Column(db.Integer, ForeignKey('years.id'))
-    year = relationship('Year')
+    year_start = db.Column(db.Integer)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.first_name} {self.last_name} ({self.year_start}-{self.year_start+1})'
 
 
 class Lesson(db.Model):
