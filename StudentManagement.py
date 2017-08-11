@@ -97,8 +97,9 @@ class LessonView(ModelView):
 admin = Admin(app, url='', name='Διαχείριση Μαθητών', template_mode='bootstrap3')
 admin.add_view(
     StudentView(Student, db.session, name="Μαθητές", menu_icon_type='glyph', menu_icon_value='glyphicon-user'))
+admin.add_view(
+    LessonView(Lesson, db.session, name="Μαθήματα", menu_icon_type='glyph', menu_icon_value='glyphicon-education'))
 admin.add_view(ModelView(Payment, db.session, name="Πληρωμές", menu_icon_type='glyph', menu_icon_value='glyphicon-eur'))
-admin.add_view(ModelView(Year, db.session, name="Έτη", menu_icon_type='glyph', menu_icon_value='glyphicon-calendar'))
 admin.add_view(
     ReportsView(name="Αναφορά Πληρωμών", endpoint='reports', menu_icon_type='glyph', menu_icon_value='glyphicon-book'))
 
