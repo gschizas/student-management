@@ -1,8 +1,10 @@
 import os
 
-from flask import Flask
+import babel.numbers as babel_numbers
+from flask import Flask, request, session
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
+from flask_babelex import Babel
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -13,9 +15,15 @@ app.config['DATABASE_FILE'] = 'studentmanagement.sqlite'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+babel = Babel(app)
 db = SQLAlchemy(app)
 
 
+@babel.localeselector
+def get_locale():
+    if request.args.get('lang'):
+        session['lang'] = request.args.get('lang')
+    return session.get('lang', 'el')
 
 
 class Student(db.Model):
