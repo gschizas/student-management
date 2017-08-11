@@ -83,7 +83,7 @@ class StudentView(ModelView):
     }
     column_formatters = {
         'current_fee': lambda v, c, m, p: f"{babel_numbers.format_currency(m.current_fee, 'EUR', locale='el_GR')}",
-        'year_start': lambda v, c, m, p: f"{m.year_start}-{m.year_start%100+1}"
+        'year_start': lambda v, c, m, p: f"{m.year_start}-{m.year_start%100+1}" if m.year_start else ''
     }
     form_overrides = {
         'current_fee': DecimalField
