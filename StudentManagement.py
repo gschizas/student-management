@@ -76,10 +76,6 @@ class ReportsView(BaseView):
         return self.render('reports_index.html', lines=lines)
 
 
-class CustomDecimalField(DecimalField):
-    pass
-
-
 class StudentView(ModelView):
     _current_year = datetime.date.today().year
     form_choices = {
