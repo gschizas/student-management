@@ -78,12 +78,13 @@ class ReportsView(BaseView):
 # Flask and Flask-SQLAlchemy initialization here
 
 admin = Admin(app, url='', name='studentmanagement', template_mode='bootstrap3')
-admin.add_view(ModelView(Student, db.session, name="Μαθητές"))
-admin.add_view(ModelView(Lesson, db.session, name="Μαθήματα"))
-admin.add_view(ModelView(Payment, db.session, name="Πληρωμές"))
-admin.add_view(ModelView(Year, db.session, name="Έτη"))
-admin.add_view(ReportsView(name="Αναφορά Πληρωμών", endpoint='reports'))
-# menu_icon_type='glyph', menu_icon_value='glyphicon-home',
+admin.add_view(ModelView(Student, db.session, name="Μαθητές", menu_icon_type='glyph', menu_icon_value='glyphicon-user'))
+admin.add_view(
+    ModelView(Lesson, db.session, name="Μαθήματα", menu_icon_type='glyph', menu_icon_value='glyphicon-education'))
+admin.add_view(ModelView(Payment, db.session, name="Πληρωμές", menu_icon_type='glyph', menu_icon_value='glyphicon-eur'))
+admin.add_view(ModelView(Year, db.session, name="Έτη", menu_icon_type='glyph', menu_icon_value='glyphicon-calendar'))
+admin.add_view(
+    ReportsView(name="Αναφορά Πληρωμών", endpoint='reports', menu_icon_type='glyph', menu_icon_value='glyphicon-notes'))
 
 if __name__ == '__main__':
 
