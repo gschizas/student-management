@@ -106,7 +106,7 @@ class StudentView(ModelView):
 
 
 class LessonView(ModelView):
-    pass
+    can_export = True
 
 
 admin = Admin(app, url='', name='Διαχείριση Μαθητών', template_mode='bootstrap3')
