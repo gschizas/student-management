@@ -84,7 +84,7 @@ admin.add_view(
 admin.add_view(ModelView(Payment, db.session, name="Πληρωμές", menu_icon_type='glyph', menu_icon_value='glyphicon-eur'))
 admin.add_view(ModelView(Year, db.session, name="Έτη", menu_icon_type='glyph', menu_icon_value='glyphicon-calendar'))
 admin.add_view(
-    ReportsView(name="Αναφορά Πληρωμών", endpoint='reports', menu_icon_type='glyph', menu_icon_value='glyphicon-notes'))
+    ReportsView(name="Αναφορά Πληρωμών", endpoint='reports', menu_icon_type='glyph', menu_icon_value='glyphicon-book'))
 
 if __name__ == '__main__':
 
