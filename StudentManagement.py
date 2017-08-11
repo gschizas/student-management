@@ -85,6 +85,19 @@ class StudentView(ModelView):
         'current_fee': lambda v, c, m, p: f"{babel_numbers.format_currency(m.current_fee, 'EUR', locale='el_GR')}",
         'year_start': lambda v, c, m, p: f"{m.year_start}-{m.year_start%100+1}"
     }
+    form_overrides = {
+        'current_fee': DecimalField
+    }
+    form_args = {
+        'current_fee': {
+            'use_locale': True
+        }
+    }
+
+    def scaffold_form(self):
+        form_class = super().scaffold_form()
+        form_class.Meta.locales = ['el_GR']
+        return form_class
 
 
 class LessonView(ModelView):
