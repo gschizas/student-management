@@ -1,3 +1,4 @@
+import datetime
 import os
 
 import babel.numbers as babel_numbers
@@ -8,6 +9,7 @@ from flask_babelex import Babel
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from wtforms.fields import DecimalField
 
 app = Flask(__name__)
 app.secret_key = b'\xda~z\xd3Y\x84\xe9vl\xa8\x01\xc8F\xd0\x98\xa2\x8e\xb4\xc2\x00\x18w\xff\xe0'
@@ -80,7 +82,11 @@ class CustomDecimalField(DecimalField):
 
 
 class StudentView(ModelView):
-    pass
+    _current_year = datetime.date.today().year
+    form_choices = {
+        'year_start': [(i, f"{i}-{i%100+1}") for i in range(_current_year - 2, _current_year + 3)]
+    }
+
 
 class LessonView(ModelView):
     pass
