@@ -76,10 +76,15 @@ class ReportsView(BaseView):
         return self.render('reports_index.html', lines=lines)
 
 
+def _current_year():
+    return datetime.date.today().year
+
+
 class StudentView(ModelView):
-    _current_year = datetime.date.today().year
+    can_export = True
+
     form_choices = {
-        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year - 2, _current_year + 3)]
+        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)]
     }
     column_formatters = {
         'current_fee': lambda v, c, m, p: f"{babel_numbers.format_currency(m.current_fee, 'EUR', locale='el_GR')}",
