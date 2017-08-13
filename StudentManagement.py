@@ -5,6 +5,8 @@ import babel.numbers as babel_numbers
 from flask import Flask, request, session
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.form import AdminModelConverter
+from flask_admin.form import BaseForm
 from flask_babelex import Babel
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
@@ -105,8 +107,17 @@ class StudentView(ModelView):
         return form_class
 
 
+class LessonModelConverter(AdminModelConverter):
+    def get_form(self, model, base_class=BaseForm, only=None, exclude=None, field_args=None):
+        return super().get_form(model, base_class, only, exclude, field_args)
+
+    def convert(self, model, mapper, name, prop, field_args, hidden_pk):
+        return super().convert(model, mapper, name, prop, field_args, hidden_pk)
+
+
 class LessonView(ModelView):
     can_export = True
+    model_form_converter = LessonModelConverter
 
 
 admin = Admin(app, url='', name='Διαχείριση Μαθητών', template_mode='bootstrap3')
