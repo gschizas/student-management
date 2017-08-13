@@ -1,7 +1,9 @@
 import datetime
+import json
 import os
 
 import babel.numbers as babel_numbers
+import dateutil.parser
 from flask import Flask, request, session
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
@@ -129,6 +131,38 @@ admin.add_view(ModelView(Payment, db.session, name="Πληρωμές", menu_icon
 admin.add_view(
     ReportsView(name="Αναφορά Πληρωμών", endpoint='reports', menu_icon_type='glyph', menu_icon_value='glyphicon-book'))
 
+
+def insert_sample_data():
+    sample_data_filename = 'sample_data.json'
+    if not os.path.exists(sample_data_filename):
+        return
+    with open(sample_data_filename) as f:
+        data = json.load(f)
+        for student in data['students']:
+            s = Student()
+            s.first_name = student['first_name']
+            s.last_name = student['last_name']
+            s.year_start = _current_year()
+            s.current_fee = 0.0
+            min_date = None
+            max_date = None
+            for lesson in student['lessons']:
+                l = Lesson()
+                l.date = dateutil.parser.parse(lesson['date'])
+                l.hours = lesson['hours']
+                l.student = s
+                if min_date is None or min_date > l.date:
+                    min_date = l.date
+                if max_date is None or max_date < l.date:
+                    max_date = l.date
+                db.session.add(l)
+            if min_date is not None and max_date is not None:
+                # assert (max_date - min_date).days < 365
+                print(f'{s.first_name} {s.last_name} ({min_date.year}-{max_date.year})')
+            db.session.add(s)
+            db.session.commit()
+
+
 if __name__ == '__main__':
 
     # Build a sample db on the fly, if one does not exist yet.
@@ -138,6 +172,6 @@ if __name__ == '__main__':
     if not os.path.exists(database_path):
         db.create_all()
         db.session.commit()
-
+        insert_sample_data()
     # Start app
     app.run(port=5011, debug=True)
