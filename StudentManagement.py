@@ -3,7 +3,8 @@ import json
 import os
 
 import babel.numbers as babel_numbers
-import dateutil.parser
+from dateutil.parser import parse as dateparse
+from dateutil.relativedelta import relativedelta
 from flask import Flask, request, session
 from flask_admin import Admin, BaseView, expose
 from flask_admin.contrib.sqla import ModelView
@@ -146,7 +147,7 @@ def insert_sample_data():
             max_date = None
             for lesson in student['lessons']:
                 l = Lesson()
-                l.date = dateutil.parser.parse(lesson['date'])
+                l.date = dateparse(lesson['date'])
                 l.hours = lesson['hours']
                 l.student = s
                 if min_date is None or min_date > l.date:
@@ -157,7 +158,7 @@ def insert_sample_data():
             if min_date is not None and max_date is not None:
                 # assert (max_date - min_date).days < 365
                 print(f'{s.first_name} {s.last_name} ({min_date.year}-{max_date.year})')
-                s.year_start = min_date.year
+                s.year_start = (min_date + relativedelta(months=-8)).year
             else:
                 s.year_start = _current_year()
             s.current_fee = 0.0
