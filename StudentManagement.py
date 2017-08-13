@@ -142,8 +142,6 @@ def insert_sample_data():
             s = Student()
             s.first_name = student['first_name']
             s.last_name = student['last_name']
-            s.year_start = _current_year()
-            s.current_fee = 0.0
             min_date = None
             max_date = None
             for lesson in student['lessons']:
@@ -159,6 +157,10 @@ def insert_sample_data():
             if min_date is not None and max_date is not None:
                 # assert (max_date - min_date).days < 365
                 print(f'{s.first_name} {s.last_name} ({min_date.year}-{max_date.year})')
+                s.year_start = min_date.year
+            else:
+                s.year_start = _current_year()
+            s.current_fee = 0.0
             db.session.add(s)
             db.session.commit()
 
