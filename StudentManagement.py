@@ -1,6 +1,7 @@
 import datetime
 import json
 import os
+import random
 
 import babel.numbers as babel_numbers
 from dateutil.parser import parse as dateparse
@@ -145,11 +146,13 @@ def insert_sample_data():
             s.last_name = student['last_name']
             min_date = None
             max_date = None
+            s.current_fee = random.randint(1, 10) * 5.0
             for lesson in student['lessons']:
                 l = Lesson()
                 l.date = dateparse(lesson['date'])
                 l.hours = lesson['hours']
                 l.student = s
+                l.fee = s.current_fee
                 if min_date is None or min_date > l.date:
                     min_date = l.date
                 if max_date is None or max_date < l.date:
@@ -161,7 +164,6 @@ def insert_sample_data():
                 s.year_start = (min_date + relativedelta(months=-8)).year
             else:
                 s.year_start = _current_year()
-            s.current_fee = 0.0
             db.session.add(s)
             db.session.commit()
 
