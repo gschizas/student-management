@@ -122,6 +122,12 @@ class LessonModelConverter(AdminModelConverter):
 class LessonView(ModelView):
     can_export = True
     model_form_converter = LessonModelConverter
+    column_formatters = {
+        'fee': lambda v, c, m, p: f"{babel_numbers.format_currency(m.fee, 'EUR', locale='el_GR')}"
+    }
+    form_overrides = {
+        'fee': DecimalField
+    }
 
 
 admin = Admin(app, url='', name='Διαχείριση Μαθητών', template_mode='bootstrap3')
