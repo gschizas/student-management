@@ -168,7 +168,7 @@ def insert_sample_data():
             if min_date is not None and max_date is not None:
                 # assert (max_date - min_date).days < 365
                 print(f'{s.first_name} {s.last_name} ({min_date.year}-{max_date.year})')
-                s.year_start = (min_date + relativedelta(months=-8)).year
+                s.year_start = (max_date + relativedelta(months=-8)).year
             else:
                 s.year_start = _current_year()
             db.session.add(s)
