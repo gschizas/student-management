@@ -16,6 +16,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from wtforms.fields import DecimalField
+from sqlalchemy.event import listens_for
 
 app = Flask(__name__)
 app.secret_key = b'\xda~z\xd3Y\x84\xe9vl\xa8\x01\xc8F\xd0\x98\xa2\x8e\xb4\xc2\x00\x18w\xff\xe0'
@@ -57,6 +58,12 @@ class Lesson(db.Model):
 
     def __str__(self):
         return f'{self.student} - {self.date} ({self.hours})'
+
+
+@listens_for(Lesson, 'before_insert')
+def before_insert_lesson(mapper, connection, target):
+    if target.fee is None:
+        target.fee = target.student.current_fee
 
 
 class Payment(db.Model):
