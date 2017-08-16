@@ -15,23 +15,32 @@
                             class="glyphicon glyphicon-log-out"></i> Έξοδος</a>
                 </p>
             {% else %}
-                <form method="POST" action="">
-                    {{ form.hidden_tag() if form.hidden_tag }}
-                    {% for f in form if f.type != 'CSRFTokenField' %}
-                        <div>
-                            {{ f.label }}
-                            {{ f }}
-                            {% if f.errors %}
-                                <ul>
-                                    {% for e in f.errors %}
-                                        <li>{{ e }}</li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
+                <div class="panel-body">
+                    <form method="POST" action="" class="form-horizontal">
+                        {{ form.hidden_tag() if form.hidden_tag }}
+                        {% for f in form if f.type != 'CSRFTokenField' %}
+                            <div class="form-group {% if f.errors %}has-feedback has-error{% endif %}">
+                                {{- f.label(
+                                class="col-sm-3 control-label",
+                                text=f.label.text + (" *" if f.flags.required else ""))-}}
+                                <div class="col-sm-3 {%- if f.errors %} danger{% endif %}">
+                                    {{ f }}
+                                    {%- if f.errors -%}
+                                        <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+                                        {% for e in field.errors %}
+                                            <span class="help-inline danger">{{ e }}</span>
+                                        {% endfor %}
+                                    {%- endif -%}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="form-group">
+                            <div class="col-sm-6">
+                                <input type="submit" class="form-control btn btn-success" value="Είσοδος"/>
+                            </div>
                         </div>
-                    {% endfor %}
-                    <button class="btn" type="submit">Submit</button>
-                </form>
+                    </form>
+                </div>
                 {{ link | safe }}
             {% endif %}
         </div>
