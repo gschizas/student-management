@@ -27,6 +27,7 @@ app.config['DATABASE_FILE'] = 'studentmanagement.sqlite'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 babel = Babel(app)
 db = SQLAlchemy(app)
 
