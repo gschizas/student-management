@@ -10,7 +10,9 @@
                     Έχετε αναγνωριστεί ως χρήστης: {{ current_user.display_name }}
                 </p>
                 <p>
-                    <a href="{{ url_for('.logout_view')}}">Logout</a>
+
+                    <a class="btn btn-primary" href="{{ url_for('.logout_view') }}"><i
+                            class="glyphicon glyphicon-log-out"></i> Έξοδος</a>
                 </p>
             {% else %}
                 <form method="POST" action="">
