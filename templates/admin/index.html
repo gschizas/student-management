@@ -6,9 +6,8 @@
 
         <div>
             {% if current_user.is_authenticated %}
-                <h1>Flask-Admin example</h1>
                 <p class="lead">
-                    Authentication
+                    Έχετε αναγνωριστεί ως χρήστης: {{ current_user.display_name }}
                 </p>
                 <p>
                     <a href="{{ url_for('.logout_view')}}">Logout</a>
