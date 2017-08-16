@@ -47,6 +47,10 @@ class User(db.Model):
     email = db.Column(db.String(120))
     password = db.Column(db.String(64))
 
+    @property
+    def display_name(self):
+        return self.first_name + " " + self.last_name
+
     def is_authenticated(self):
         return True
 
