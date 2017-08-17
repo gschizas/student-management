@@ -1,0 +1,30 @@
+{
+    "addons": [
+        {
+            "plan": "heroku-postgresql"
+        }
+    ],
+    "description": "Student Management.",
+    "env": {
+        "DATABASE_URL": {
+            "description": "If you have a local database, this should be something like `postgresql+psycopg2://postgres@localhost/studentmanagement`",
+            "required": true
+        },
+        "FLASK_SECRET_KEY": {
+            "description": "Any random string",
+            "generator": "secret",
+            "required": true
+        },
+        "INITIAL_DATA_URL": {
+            "description": "a URL containing initial data in JSON format",
+            "required": false
+        }
+    },
+    "keywords": [
+        "student",
+        "hours",
+        "lessons"
+    ],
+    "name": "Student Management",
+    "repository": "https://bitbucket.org/gschizas/student-management-python"
+}
