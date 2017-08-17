@@ -328,21 +328,33 @@ def insert_sample_data():
             db.session.commit()
 
 
+def init_database_sqlite():
+    app_dir = os.path.realpath(os.path.dirname(__file__))
+    database_path = os.path.join(app_dir, app.config['DATABASE_FILE'])
+    if not os.path.exists(database_path):
+        db.create_all()
+        db.session.commit()
+        insert_sample_data()
+
+
+def init_database_postgres():
+    existing_tables = db.engine.table_names()
+    if 'users' not in existing_tables:
+        db.create_all()
+        db.session.commit()
+        insert_sample_data()
+
+
+def init_database():
+    if 'DATABASE_URL' in os.environ:
+        init_database_postgres()
+    else:
+        init_database_sqlite()
+
+
 if __name__ == '__main__':
     # Build a sample db on the fly, if one does not exist yet.
-    app_dir = os.path.realpath(os.path.dirname(__file__))
-    if 'DATABASE_URL' in os.environ:
-        existing_tables = db.engine.table_names()
-        if 'users' not in existing_tables:
-            db.create_all()
-            db.session.commit()
-            insert_sample_data()
-    else:
-        database_path = os.path.join(app_dir, app.config['DATABASE_FILE'])
-        if not os.path.exists(database_path):
-            db.create_all()
-            db.session.commit()
-            insert_sample_data()
+    init_database()
     # Start app
     init_login()
     app.run(port=5011, debug=True)
