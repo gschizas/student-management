@@ -24,7 +24,10 @@ from wtforms.fields import DecimalField
 app = Flask(__name__)
 app.secret_key = b'\xda~z\xd3Y\x84\xe9vl\xa8\x01\xc8F\xd0\x98\xa2\x8e\xb4\xc2\x00\x18w\xff\xe0'
 app.config['DATABASE_FILE'] = 'studentmanagement.sqlite'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
+if 'DATABASE_URL' in os.environ:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -40,12 +43,13 @@ def get_locale():
 
 
 class User(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(35))
     last_name = db.Column(db.String(35))
     username = db.Column(db.String(35), unique=True)
     email = db.Column(db.String(120))
-    password = db.Column(db.String(64))
+    password = db.Column(db.String(128))
 
     @property
     def display_name(self):
@@ -327,12 +331,18 @@ def insert_sample_data():
 if __name__ == '__main__':
     # Build a sample db on the fly, if one does not exist yet.
     app_dir = os.path.realpath(os.path.dirname(__file__))
-    database_path = os.path.join(app_dir, app.config['DATABASE_FILE'])
-    print(database_path)
-    if not os.path.exists(database_path):
-        db.create_all()
-        db.session.commit()
-        insert_sample_data()
+    if 'DATABASE_URL' in os.environ:
+        existing_tables = db.engine.table_names()
+        if 'users' not in existing_tables:
+            db.create_all()
+            db.session.commit()
+            insert_sample_data()
+    else:
+        database_path = os.path.join(app_dir, app.config['DATABASE_FILE'])
+        if not os.path.exists(database_path):
+            db.create_all()
+            db.session.commit()
+            insert_sample_data()
     # Start app
     init_login()
     app.run(port=5011, debug=True)
