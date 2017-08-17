@@ -22,10 +22,10 @@ from Models import db, User, Student, Lesson, Payment
 
 app = Flask(__name__)
 app.secret_key = b'\xda~z\xd3Y\x84\xe9vl\xa8\x01\xc8F\xd0\x98\xa2\x8e\xb4\xc2\x00\x18w\xff\xe0'
-app.config['DATABASE_FILE'] = 'studentmanagement.sqlite'
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 else:
+    app.config['DATABASE_FILE'] = 'studentmanagement.sqlite'
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + app.config['DATABASE_FILE']
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
