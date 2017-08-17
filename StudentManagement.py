@@ -294,9 +294,14 @@ def init_database():
         init_database_sqlite()
 
 
-if __name__ == '__main__':
-    # Build a sample db on the fly, if one does not exist yet.
-    init_database()
-    # Start app
-    init_login()
+def main():
     app.run(port=5011, debug=True)
+
+
+# Build a sample db on the fly, if one does not exist yet.
+init_database()
+# Start app
+init_login()
+
+if __name__ == '__main__':
+    main()
