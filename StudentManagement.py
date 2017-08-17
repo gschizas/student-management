@@ -13,13 +13,12 @@ from flask_admin.contrib.sqla import ModelView
 from flask_admin.contrib.sqla.form import AdminModelConverter
 from flask_admin.form import BaseForm
 from flask_babelex import Babel
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import ForeignKey
 from sqlalchemy.event import listens_for
-from sqlalchemy.orm import relationship
 from werkzeug.security import check_password_hash, generate_password_hash
 from wtforms import form, fields, validators
 from wtforms.fields import DecimalField
+
+from Models import db, User, Student, Lesson, Payment
 
 app = Flask(__name__)
 app.secret_key = b'\xda~z\xd3Y\x84\xe9vl\xa8\x01\xc8F\xd0\x98\xa2\x8e\xb4\xc2\x00\x18w\xff\xe0'
@@ -31,8 +30,9 @@ else:
 app.config['SQLALCHEMY_ECHO'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+db.app = app
+db.init_app(app)
 babel = Babel(app)
-db = SQLAlchemy(app)
 
 
 @babel.localeselector
@@ -40,38 +40,6 @@ def get_locale():
     if request.args.get('lang'):
         session['lang'] = request.args.get('lang')
     return session.get('lang', 'el')
-
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(35))
-    last_name = db.Column(db.String(35))
-    username = db.Column(db.String(35), unique=True)
-    email = db.Column(db.String(120))
-    password = db.Column(db.String(128))
-
-    @property
-    def display_name(self):
-        return self.first_name + " " + self.last_name
-
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
-
-    def __str__(self):
-        return self.username
-
-    def __unicode__(self):
-        return self.username
 
 
 class LoginForm(form.Form):
@@ -155,44 +123,10 @@ class MyAdminIndexView(AdminIndexView):
         return redirect(url_for('.index'))
 
 
-class Student(db.Model):
-    __tablename__ = 'students'
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String(30))
-    last_name = db.Column(db.String(50))
-    current_fee = db.Column(db.DECIMAL)
-    year_start = db.Column(db.Integer)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.year_start}-{self.year_start+1})'
-
-
-class Lesson(db.Model):
-    __tablename__ = 'lessons'
-    id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, ForeignKey('students.id'))
-    student = relationship('Student')
-    date = db.Column(db.Date)
-    hours = db.Column(db.Integer)
-    fee = db.Column(db.DECIMAL)
-
-    def __str__(self):
-        return f'{self.student} - {self.date} ({self.hours})'
-
-
 @listens_for(Lesson, 'before_insert')
 def before_insert_lesson(mapper, connection, target):
     if target.fee is None:
         target.fee = target.student.current_fee
-
-
-class Payment(db.Model):
-    __tablename__ = 'payments'
-    id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, ForeignKey('students.id'))
-    student = relationship('Student')
-    date = db.Column(db.Date)
-    amount = db.Column(db.DECIMAL)
 
 
 class ReportsView(BaseView):
