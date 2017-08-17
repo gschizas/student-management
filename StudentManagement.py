@@ -5,6 +5,7 @@ import random
 
 import babel.numbers as babel_numbers
 import flask_login as login
+import requests
 from dateutil.parser import parse as dateparse
 from dateutil.relativedelta import relativedelta
 from flask import Flask, request, session, redirect, url_for
@@ -220,46 +221,53 @@ def init_login():
 
 
 def insert_sample_data():
-    sample_data_filename = 'sample_data.json'
-    if not os.path.exists(sample_data_filename):
+    if 'INITIAL_DATA_URL' not in os.environ:
         return
-    with open(sample_data_filename) as f:
-        data = json.load(f)
-        for student in data['students']:
-            s = Student()
-            s.first_name = student['first_name']
-            s.last_name = student['last_name']
-            min_date = None
-            max_date = None
-            s.current_fee = random.randint(1, 10) * 5.0
-            for lesson in student['lessons']:
-                l = Lesson()
-                l.date = dateparse(lesson['date'])
-                l.hours = lesson['hours']
-                l.student = s
-                l.fee = s.current_fee
-                if min_date is None or min_date > l.date:
-                    min_date = l.date
-                if max_date is None or max_date < l.date:
-                    max_date = l.date
-                db.session.add(l)
-            if min_date is not None and max_date is not None:
-                # assert (max_date - min_date).days < 365
-                print(f'{s.first_name} {s.last_name} ({min_date.year}-{max_date.year})')
-                s.year_start = (max_date + relativedelta(months=-8)).year
-            else:
-                s.year_start = _current_year()
-            db.session.add(s)
-            db.session.commit()
-        for user in data['users']:
-            u = User()
-            u.first_name = user['first_name']
-            u.last_name = user['last_name']
-            u.email = user['email']
-            u.username = user['username']
-            u.password = generate_password_hash(user['password'])
-            db.session.add(u)
-            db.session.commit()
+
+    initial_data_location = os.environ['INITIAL_DATA_URL']
+    if initial_data_location.startswith('http://') or initial_data_location.startswith('https://'):
+        data = requests.get(initial_data_location).json()
+    else:
+        if not os.path.exists(initial_data_location):
+            return
+        with open(initial_data_location) as f:
+            data = json.load(f)
+
+    for student in data['students']:
+        s = Student()
+        s.first_name = student['first_name']
+        s.last_name = student['last_name']
+        min_date = None
+        max_date = None
+        s.current_fee = random.randint(1, 10) * 5.0
+        for lesson in student['lessons']:
+            l = Lesson()
+            l.date = dateparse(lesson['date'])
+            l.hours = lesson['hours']
+            l.student = s
+            l.fee = s.current_fee
+            if min_date is None or min_date > l.date:
+                min_date = l.date
+            if max_date is None or max_date < l.date:
+                max_date = l.date
+            db.session.add(l)
+        if min_date is not None and max_date is not None:
+            # assert (max_date - min_date).days < 365
+            print(f'{s.first_name} {s.last_name} ({min_date.year}-{max_date.year})')
+            s.year_start = (max_date + relativedelta(months=-8)).year
+        else:
+            s.year_start = _current_year()
+        db.session.add(s)
+        db.session.commit()
+    for user in data['users']:
+        u = User()
+        u.first_name = user['first_name']
+        u.last_name = user['last_name']
+        u.email = user['email']
+        u.username = user['username']
+        u.password = generate_password_hash(user['password'])
+        db.session.add(u)
+        db.session.commit()
 
 
 def init_database_sqlite():
