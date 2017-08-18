@@ -153,8 +153,6 @@ def _current_year():
 
 class StudentView(AuthorizedModelView):
     can_export = True
-    create_modal = True
-    edit_modal = True
 
     form_choices = {
         'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)]
