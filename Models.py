@@ -45,8 +45,16 @@ class Student(db.Model):
     current_fee = db.Column(db.DECIMAL, nullable=False)
     year_start = db.Column(db.Integer, nullable=False)
 
+    @property
+    def display_name(self):
+        return f'{self.first_name} {self.last_name}'
+
+    @property
+    def display_year(self):
+        return f'{self.year_start}-{(self.year_start+1) % 100}'
+
     def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.year_start}-{self.year_start+1})'
+        return f'{self.display_name} ({self.display_year})'
 
 
 class Lesson(db.Model):

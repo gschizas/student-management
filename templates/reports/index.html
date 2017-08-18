@@ -1,9 +1,11 @@
 {% extends 'admin/master.html' %}
 {% block body %}
     <table class="table table-striped table-bordered table-hover">
-    <tr><th>Μαθητής</th><th>Υπόλοιπο</th></tr>
+    <tr><th>Μαθητής</th><th>Έτος</th><th>Υπόλοιπο</th></tr>
     {% for line in lines %}
-        <tr><td>{{ line.Student }}</td><td>{{ line.Balance }}</td></tr>
+        <tr><td>{{ line.Student.display_name }}</td>
+            <td>{{ line.Student.display_year }}</td>
+            <td align="right" class="{{ "success" if line.Balance < 0.01 }}">{{ babel_numbers.format_currency(line.Balance, 'EUR', locale='el_GR') }}</td></tr>
     {% endfor %}
     </table>
 {% endblock %}

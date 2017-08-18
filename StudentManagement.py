@@ -143,8 +143,8 @@ class ReportsView(BaseView):
         for s in all_students:
             student_paid = sum([p.amount for p in all_payments if p.student_id == s.id])
             student_bought = sum([l.fee * l.hours for l in all_lessons if l.student_id == s.id])
-            lines.append({'Student': str(s), 'Balance': round(student_bought - student_paid, 2)})
-        return self.render('reports/index.html', lines=lines)
+            lines.append({'Student': s, 'Balance': round(student_bought - student_paid, 2)})
+        return self.render('reports/index.html', lines=lines, babel_numbers=babel_numbers)
 
 
 def _current_year():
