@@ -25,13 +25,15 @@
                                 text=f.label.text + (" *" if f.flags.required else ""))-}}
                                 <div class="col-sm-3 {%- if f.errors %} danger{% endif %}">
                                     {{ f }}
-                                    {%- if f.errors -%}
+                                </div>
+                                {%- if f.errors -%}
+                                    <div class="col-sm-4 danger">
                                         <span class="glyphicon glyphicon-remove form-control-feedback"></span>
-                                        {% for e in field.errors %}
+                                        {% for e in f.errors %}
                                             <span class="help-inline danger">{{ e }}</span>
                                         {% endfor %}
-                                    {%- endif -%}
-                                </div>
+                                    </div>
+                                {%- endif -%}
                             </div>
                         {% endfor %}
                         <div class="form-group">
