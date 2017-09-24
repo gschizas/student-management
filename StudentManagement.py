@@ -226,9 +226,10 @@ def insert_sample_data():
     if initial_data_location.startswith('http://') or initial_data_location.startswith('https://'):
         data = requests.get(initial_data_location).json()
     else:
-        if not os.path.exists(initial_data_location):
+        initial_data_location_full = os.path.join(os.getcwd(), initial_data_location)
+        if not os.path.exists(initial_data_location_full):
             return
-        with open(initial_data_location) as f:
+        with open(initial_data_location_full) as f:
             data = json.load(f)
 
     for student in data['students']:
