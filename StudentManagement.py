@@ -167,6 +167,7 @@ class StudentView(AuthorizedModelView):
     form_overrides = {
         'current_fee': DecimalField
     }
+    column_searchable_list = ['first_name', 'last_name']
     form_args = {
         'current_fee': {
             'use_locale': True
