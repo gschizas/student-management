@@ -4,19 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-flask-admin = "*"
-sqlalchemy = "*"
-python-dateutil = "*"
-"psycopg2" = "*"
-requests = "*"
-gunicorn = "*"
-Flask-SQLAlchemy = "*"
 Babel = "*"
-WTForms = "*"
-Flask-Login = "*"
-Flask-BabelEx = "*"
-Werkzeug = "*"
 Flask = "*"
+flask-admin = "*"
+Flask-BabelEx = "*"
+Flask-Login = "*"
+Flask-SQLAlchemy = "*"
+gunicorn = "*"
+psycopg2 = "*"
+python-dateutil = "*"
+requests = "*"
+sqlalchemy = "*"
+Werkzeug = "*"
+WTForms = "*"
 
 [dev-packages]
 
