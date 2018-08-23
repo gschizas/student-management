@@ -208,9 +208,9 @@ admin.add_view(
     AuthorizedModelView(Payment, db.session, name="Πληρωμές", menu_icon_type='glyph', menu_icon_value='glyphicon-eur'))
 admin.add_view(
     ReportsView(name="Αναφορά Πληρωμών", endpoint='reports', menu_icon_type='glyph', menu_icon_value='glyphicon-book'))
-admin.add_view(AuthorizedModelView(Location, db.session, name='Τοποθεσίες'))
-admin.add_view(AuthorizedModelView(Subject, db.session, name='Μαθήματα'))
-admin.add_view(AuthorizedModelView(Grade, db.session, name='Τάξεις'))
+admin.add_view(AuthorizedModelView(Location, db.session, name='Τοποθεσίες', category="Πίνακες συστήματος"))
+admin.add_view(AuthorizedModelView(Subject, db.session, name='Μαθήματα', category="Πίνακες συστήματος"))
+admin.add_view(AuthorizedModelView(Grade, db.session, name='Τάξεις', category="Πίνακες συστήματος"))
 
 
 # Initialize flask-login
