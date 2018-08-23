@@ -44,6 +44,11 @@ class Student(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     current_fee = db.Column(db.DECIMAL, nullable=False)
     year_start = db.Column(db.Integer, nullable=False)
+    location = db.Column(db.SmallInteger, nullable=True)
+    subject = db.Column(db.SmallInteger, nullable=True)
+    grade = db.Column(db.SmallInteger, nullable=True)
+    notes = db.Column(db.Text, nullable=True)
+
 
     @property
     def display_name(self):

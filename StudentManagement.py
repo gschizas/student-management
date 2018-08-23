@@ -155,7 +155,10 @@ class StudentView(AuthorizedModelView):
     can_export = True
 
     form_choices = {
-        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)]
+        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)],
+        'location': [(0, ''), (1, 'Σύρος'), (2, 'Νάξος')],
+        'subject': [(0, ''), (1, 'Βιολογία'), (2, 'Χημεία')],
+        'grade': [(0, ''), (1, "Β' Λυκείου"), (2, "Γ' Λυκείου"), (3, "Απόφοιτος")]
     }
     column_formatters = {
         'current_fee': lambda v, c, m, p: f"{babel_numbers.format_currency(m.current_fee, 'EUR', locale='el_GR')}",
