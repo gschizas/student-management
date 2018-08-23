@@ -19,6 +19,7 @@ Werkzeug = "*"
 WTForms = "*"
 
 [dev-packages]
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"
