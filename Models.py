@@ -37,6 +37,33 @@ class User(db.Model):
         return self.username
 
 
+class Location(db.Model):
+    __tablename__ = 'locations'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Grade(db.Model):
+    __tablename__ = 'grades'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
+class Subject(db.Model):
+    __tablename__ = 'subjects'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), nullable=False)
+
+    def __str__(self):
+        return self.name
+
+
 class Student(db.Model):
     __tablename__ = 'students'
     id = db.Column(db.Integer, primary_key=True)
@@ -44,11 +71,13 @@ class Student(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     current_fee = db.Column(db.DECIMAL, nullable=False)
     year_start = db.Column(db.Integer, nullable=False)
-    location = db.Column(db.SmallInteger, nullable=True)
-    subject = db.Column(db.SmallInteger, nullable=True)
-    grade = db.Column(db.SmallInteger, nullable=True)
+    location_id = db.Column(db.Integer, ForeignKey('locations.id'), nullable=True)
+    location = relationship('Location')
+    subject_id = db.Column(db.Integer, ForeignKey('subjects.id'), nullable=True)
+    subject = relationship('Subject')
+    grade_id = db.Column(db.Integer, ForeignKey('grades.id'), nullable=True)
+    grade = relationship('Grade')
     notes = db.Column(db.Text, nullable=True)
-
 
     @property
     def display_name(self):

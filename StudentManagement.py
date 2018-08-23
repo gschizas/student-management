@@ -11,6 +11,7 @@ from dateutil.relativedelta import relativedelta
 from flask import Flask, request, session, redirect, url_for
 from flask_admin import Admin, AdminIndexView, BaseView, helpers, expose
 from flask_admin.contrib.sqla import ModelView
+from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin.contrib.sqla.form import AdminModelConverter
 from flask_admin.form import BaseForm
 from flask_babelex import Babel
@@ -19,7 +20,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from wtforms import form, fields, validators
 from wtforms.fields import DecimalField
 
-from Models import db, User, Student, Lesson, Payment
+from Models import db, User, Student, Lesson, Payment, Location, Subject, Grade
 
 app = Flask(__name__)
 app.secret_key = b'\xda~z\xd3Y\x84\xe9vl\xa8\x01\xc8F\xd0\x98\xa2\x8e\xb4\xc2\x00\x18w\xff\xe0'
@@ -155,10 +156,7 @@ class StudentView(AuthorizedModelView):
     can_export = True
 
     form_choices = {
-        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)],
-        'location': [(0, ''), (1, 'Σύρος'), (2, 'Νάξος')],
-        'subject': [(0, ''), (1, 'Βιολογία'), (2, 'Χημεία')],
-        'grade': [(0, ''), (1, "Β' Λυκείου"), (2, "Γ' Λυκείου"), (3, "Απόφοιτος")]
+        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)]
     }
     column_formatters = {
         'current_fee': lambda v, c, m, p: f"{babel_numbers.format_currency(m.current_fee, 'EUR', locale='el_GR')}",
@@ -168,6 +166,7 @@ class StudentView(AuthorizedModelView):
         'current_fee': DecimalField
     }
     column_searchable_list = ['first_name', 'last_name']
+    column_filters = ['location', 'subject', 'grade', 'year_start']
     form_args = {
         'current_fee': {
             'use_locale': True
@@ -209,6 +208,9 @@ admin.add_view(
     AuthorizedModelView(Payment, db.session, name="Πληρωμές", menu_icon_type='glyph', menu_icon_value='glyphicon-eur'))
 admin.add_view(
     ReportsView(name="Αναφορά Πληρωμών", endpoint='reports', menu_icon_type='glyph', menu_icon_value='glyphicon-book'))
+admin.add_view(AuthorizedModelView(Location, db.session, name='Τοποθεσίες'))
+admin.add_view(AuthorizedModelView(Subject, db.session, name='Μαθήματα'))
+admin.add_view(AuthorizedModelView(Grade, db.session, name='Τάξεις'))
 
 
 # Initialize flask-login
@@ -261,7 +263,9 @@ def insert_sample_data():
         else:
             s.year_start = _current_year()
         db.session.add(s)
-        db.session.commit()
+
+    db.session.commit()
+
     for user in data['users']:
         u = User()
         u.first_name = user['first_name']
@@ -270,7 +274,28 @@ def insert_sample_data():
         u.username = user['username']
         u.password = generate_password_hash(user['password'])
         db.session.add(u)
-        db.session.commit()
+    db.session.commit()
+
+    for idx, loc_name in enumerate(['Σύρος', 'Νάξος']):
+        loc = Location()
+        loc.id = idx + 1
+        loc.name = loc_name
+        db.session.add(loc)
+    db.session.commit()
+
+    for idx, subj_name in enumerate(['Βιολογία', 'Χημεία']):
+        subj = Subject()
+        subj.id = idx + 1
+        subj.name = subj_name
+        db.session.add(subj)
+    db.session.commit()
+
+    for idx, grd_name in enumerate(["Α' Λυκείου", "Β' Λυκείου", "Γ' Λυκείου", "Απόφοιτος"]):
+        grd = Grade()
+        grd.id = idx + 1
+        grd.name = grd_name
+        db.session.add(grd)
+    db.session.commit()
 
 
 def init_database_sqlite():
