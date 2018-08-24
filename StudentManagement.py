@@ -1,3 +1,4 @@
+import base64
 import datetime
 import json
 import os
@@ -23,7 +24,7 @@ from wtforms.fields import DecimalField
 from Models import db, User, Student, Lesson, Payment, Location, Subject, Grade
 
 app = Flask(__name__)
-app.secret_key = b'\xda~z\xd3Y\x84\xe9vl\xa8\x01\xc8F\xd0\x98\xa2\x8e\xb4\xc2\x00\x18w\xff\xe0'
+app.secret_key = base64.b64decode('2n5601mE6XZsqAHIRtCYoo60wgAYd//g')
 if 'DATABASE_URL' in os.environ:
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 else:
