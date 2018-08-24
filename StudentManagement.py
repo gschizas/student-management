@@ -12,7 +12,6 @@ from dateutil.relativedelta import relativedelta
 from flask import Flask, request, session, redirect, url_for
 from flask_admin import Admin, AdminIndexView, BaseView, helpers, expose
 from flask_admin.contrib.sqla import ModelView
-from flask_admin.contrib.sqla.filters import BaseSQLAFilter
 from flask_admin.contrib.sqla.form import AdminModelConverter
 from flask_admin.form import BaseForm
 from flask_babelex import Babel
@@ -157,7 +156,8 @@ class StudentView(AuthorizedModelView):
     can_export = True
 
     form_choices = {
-        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)]
+        'year_start': [(str(i), f"{i}-{i%100+1}") for i in range(_current_year() - 2, _current_year() + 3)],
+        'location': [(loc.id, loc.name) for loc in db.session.query(Location).all()]
     }
     column_formatters = {
         'current_fee': lambda v, c, m, p: f"{babel_numbers.format_currency(m.current_fee, 'EUR', locale='el_GR')}",
@@ -166,6 +166,16 @@ class StudentView(AuthorizedModelView):
     form_overrides = {
         'current_fee': DecimalField
     }
+    column_list = [
+        'first_name',
+        'last_name',
+        'current_fee',
+        'year_start',
+        'location',
+        'subject',
+        'grade',
+        'notes'
+    ]
     column_searchable_list = ['first_name', 'last_name']
     column_filters = ['location', 'subject', 'grade', 'year_start']
     form_args = {
